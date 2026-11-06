@@ -1,0 +1,49 @@
+{
+  "name": "prompt-whale",
+  "version": "0.1.0",
+  "description": "鲸语提示词助手：把 dsh 主输入框里未发送的草稿交给可选大模型（默认 Agnes，可切混元 Hy4 / DeepSeek）润色成自包含的高质量提示词，浮层可编辑后替换或取消，并推荐生态里尚未安装的插件。",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "lib/",
+    "assets/",
+    "test/",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.mjs"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "prompt-optimizer",
+    "prompt-whale",
+    "hunyuan-hy4",
+    "plugin-discovery"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "author": "local",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  }
+}

@@ -1,0 +1,10 @@
+# prompt-whale —— bundle 挂载声明
+#
+# 本机铁律：DSH 不会自动应用包内的 dsh.bundle.patch，
+# profile 的 cordis.patch.yml 里必须另写一份同构的 `- insert:`（见 README）。
+# id 与包名一致，宿主按这个 id 寻址配置命名空间与 settings.*。
+- insert:
+    - id: prompt-whale
+      name: prompt-whale
+      config:
+        enabled: true
