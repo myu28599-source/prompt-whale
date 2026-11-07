@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="assets/whale-idle.gif" alt="鲸语提示词助手 · 小鲸鱼娘" width="150">
+  <img src="assets/whale-idle.gif" alt="小鲸鱼提示词助手 · 小鲸鱼娘" width="150">
   <br>
   <sub>🐳 点一下小鲸鱼娘，把还没发送的草稿一键润色成高质量提示词</sub>
 
-# 鲸语提示词助手 · prompt-whale
+# 小鲸鱼提示词助手 · prompt-whale
 
 **简体中文**
 
@@ -106,7 +106,7 @@ Windows 下 `file:` 后面写正斜杠绝对路径，例如 `file:E:/plugins/pro
 
 1. **重启 DSH**（DSH 的插件清单只在启动时读取）
 2. 重启后**输入框旁边出现小鲸鱼娘图标** = 安装成功
-3. 打开 **设置 → 鲸语提示词助手**，确认设置页正常渲染
+3. 打开 **设置 → 小鲸鱼提示词助手**，确认设置页正常渲染
 
 <details>
 <summary><b>重启后按钮没出现？（部分 DSH 版本需要手动补挂载，点开看）</b></summary>
@@ -150,7 +150,7 @@ dsh plugin --profile desktop remove prompt-whale
 ## 🚀 快速开始（2 分钟）
 
 1. **拿一把免费的 Agnes Key**：注册 [platform.agnes-ai.com](https://platform.agnes-ai.com)（邮箱 / Google / GitHub，无需信用卡）→ 控制台「API 密钥」→ 创建，`sk-` 开头。
-2. **粘进插件**：DSH 设置 → 鲸语提示词助手 → Provider 保持默认 `Agnes` → 粘贴 Key → 保存。
+2. **粘进插件**：DSH 设置 → 小鲸鱼提示词助手 → Provider 保持默认 `Agnes` → 粘贴 Key → 保存。
 3. **点「运行润色自测」**：显示成功就说明全链路通了。
 4. **回主界面开用**：在输入框随便写句草稿（别发送）→ 点小鲸鱼娘 → 浮层里看到润色后的提示词 → 点「替换」覆盖草稿，或者「复制」手动粘贴。
 
@@ -203,7 +203,7 @@ dsh plugin --profile desktop remove prompt-whale
 
 ## ⚙️ 配置项
 
-设置 → 鲸语提示词助手，全部可视化配置，改完点「保存配置」即生效：
+设置 → 小鲸鱼提示词助手，全部可视化配置，改完点「保存配置」即生效：
 
 | 配置 | 取值 | 默认 | 说明 |
 | --- | --- | --- | --- |

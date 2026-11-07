@@ -1,5 +1,5 @@
 /**
- * 🐋 鲸语提示词助手 prompt-whale —— node 侧。
+ * 🐋 小鲸鱼提示词助手 prompt-whale —— node 侧。
  *
  * 挂载机制（沿用已验证蓝本 dsh-prompt-optimizer v0.3.0，app.asar 0.2.2-rc.1 实测）：
  *   - ctx.tools.view() → visible.entries() 取当前可用工具清单（inject: ['tools']）；

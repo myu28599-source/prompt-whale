@@ -1,5 +1,5 @@
 /**
- * 🐋 鲸语提示词助手 prompt-whale —— 浏览器端。
+ * 🐋 小鲸鱼提示词助手 prompt-whale —— 浏览器端。
  *
  * 加载形状对齐蓝本 dsh-prompt-optimizer v0.3.0：
  *   window.__ModuleLoader__.load({ id, factory(require) })；
@@ -269,7 +269,7 @@
         },
           h('div', { style: { ...s.row, marginBottom: 10 } },
             h(WhaleAvatar, { size: 28 }),
-            h('div', { style: { fontWeight: 600, fontSize: 14 } }, '鲸语提示词助手 · 模型优化建议'),
+            h('div', { style: { fontWeight: 600, fontSize: 14 } }, '小鲸鱼提示词助手 · 模型优化建议'),
             h('span', { style: { flex: 1 } }),
             meta.providerLabel ? h('span', { style: s.pill }, `${meta.providerLabel} / ${meta.model || ''}`) : null,
             h('button', { type: 'button', style: s.btnGhost, onClick: onCancel, title: '关闭' }, '✕'),
@@ -544,7 +544,7 @@
             if (nextSize === avatarSize) return;
             updateSharedUiThrottled({ size: nextSize });
           },
-          title: '🐋 鲸语提示词助手：点击润色；按住拖动可自由摆放；滚轮缩放；双击复位',
+          title: '🐋 小鲸鱼提示词助手：点击润色；按住拖动可自由摆放；滚轮缩放；双击复位',
           style: {
             display: 'inline-flex', alignItems: 'center', gap: 4,
             boxSizing: 'border-box', padding: '2px 9px 2px 4px',
@@ -683,7 +683,7 @@
 
         return h('div', { style: s.root },
           h('div', { style: s.card },
-            h('div', { style: s.title }, h(WhaleAvatar, { size: 24 }), '鲸语提示词助手'),
+            h('div', { style: s.title }, h(WhaleAvatar, { size: 24 }), '小鲸鱼提示词助手'),
             h('p', { style: s.hint }, '把主输入框里「尚未发送」的草稿润色成自包含、可执行的高质量提示词，并推荐还没安装的 dsh 插件。用法：输入框写好草稿 → 点旁边的小鲸鱼娘「润色」→ 浮层里编辑后选「替换」或「取消」。默认 Agnes 免费档，可切混元 Hy4 / DeepSeek。'),
 
             field('后端 Provider', h('select', {
@@ -945,7 +945,7 @@
                   name: 'settings.section',
                   id: SECTION_ID,
                   order: 910,
-                  label: () => '鲸语提示词助手',
+                  label: () => '小鲸鱼提示词助手',
                 },
                 SettingsPanel,
               );
