@@ -28,18 +28,26 @@ test('buildOptimizeRequest 拼出 §7 的四段上下文', () => {
   assert.match(userContent, /【输出要求】/);
 });
 
-test('filterTools 过滤黑名单 / 截断描述 / 限制条数', () => {
+test('filterTools 黑名单真生效：默认空不过滤，显式正则真从清单剔除', () => {
   const entries = [
     { name: 'mcp__rea__secret', description: 'x' },
     { name: 'image_gen', description: 'a'.repeat(500) },
     { name: 'shell', description: 'run' },
   ];
-  const { kept, droppedCount } = filterTools(entries, { maxTools: 2 });
+  // 默认黑名单为空：不再写死 rea，不过滤任何工具（靠 maxTools 限制也只限条数，不删内容）
+  const def = filterTools(entries);
+  assert.equal(def.droppedCount, 0);
+  assert.equal(def.kept.length, 3);
+
+  // 显式黑名单：正则真命中并剔除，且不靠 maxTools 兜底（maxTools 设很大证明是黑名单在起作用）
+  const { kept, droppedCount } = filterTools(entries, { blacklist: ['^mcp__rea__'], maxTools: 99 });
   assert.equal(droppedCount, 1);
   assert.equal(kept.length, 2);
-  assert.equal(kept[0].name, 'image_gen');
-  assert.ok(kept[0].description.endsWith('…'));
-  assert.equal(kept[0].description.length, 301);
+  assert.ok(!kept.some((t) => t.name.startsWith('mcp__rea__')), '黑名单命中的工具必须被剔除');
+  // 描述仍按 maxDesc 截断
+  const img = kept.find((t) => t.name === 'image_gen');
+  assert.ok(img.description.endsWith('…'));
+  assert.equal(img.description.length, 301);
 });
 
 test('renderToolCatalog 受总长上限约束并标注省略数量', () => {
