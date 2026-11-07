@@ -68,6 +68,22 @@ test('相关性：类别命中的保留，无关类别丢弃', () => {
   assert.equal(r.dropped, TOOLS.length - r.kept.length);
 });
 
+test('生成视频：命中 remotion/ffmpeg 等视频工具，丢弃图片与无关工具', () => {
+  const videoTools = [
+    ...TOOLS,
+    { name: 'remotion_render', description: 'Remotion 渲染引擎导出 MP4' },
+    { name: 'mcp__dsh-video-kit__video_read', description: '读取视频生成逐字稿与关键帧' },
+  ];
+  const r = rankToolsByRelevance(videoTools, '帮我生成一段视频', { maxTools: 15, maxChars: 4000 });
+  const names = r.kept.map((t) => t.name);
+  assert.ok(names.includes('remotion_render'), `Remotion 应被识别为视频工具：${names}`);
+  assert.ok(names.includes('ffmpeg'), `ffmpeg 应保留：${names}`);
+  assert.ok(names.includes('mcp__dsh-video-kit__video_read'), `video_read 应保留：${names}`);
+  assert.ok(!names.includes('image_gen'), `应丢弃图片工具：${names}`);
+  assert.ok(!names.includes('mcp__github__create_issue'), `应丢弃无关 GitHub 工具：${names}`);
+  assert.equal(r.fallback, false);
+});
+
 test('显式点名必留，且不受 maxTools 约束', () => {
   const r = rankToolsByRelevance(TOOLS, '用 mcp__github__create_issue 建 issue，用 web_search 查资料', { maxTools: 1, maxChars: 4000 });
   const names = r.kept.map((t) => t.name);
