@@ -84,6 +84,47 @@ test('生成视频：命中 remotion/ffmpeg 等视频工具，丢弃图片与无
   assert.equal(r.fallback, false);
 });
 
+test('生成视频：comfyUI 跨类命中（名字无 video 但能生视频）', () => {
+  const tools = [
+    ...TOOLS,
+    { name: 'comfyui_run', description: '本地 ComfyUI 生图与视频工作流' },
+    { name: 'mcp__dsh-video-kit__video_read', description: '读取视频生成逐字稿' },
+  ];
+  const r = rankToolsByRelevance(tools, '帮我生成一段视频', { maxTools: 15, maxChars: 4000 });
+  const names = r.kept.map((t) => t.name);
+  assert.ok(names.includes('comfyui_run'), `ComfyUI 应跨类命中视频：${names}`);
+  assert.ok(names.includes('mcp__dsh-video-kit__video_read'), `video_read 应保留：${names}`);
+  assert.ok(!names.includes('mcp__github__create_issue'), `应丢弃无关 GitHub 工具：${names}`);
+});
+
+test('生成视频：描述写「AI 视频生成」但名字无关的工具也能命中', () => {
+  const tools = [
+    ...TOOLS,
+    { name: 'magic_tool_x', description: 'AI 视频生成与智能剪辑' },
+  ];
+  const r = rankToolsByRelevance(tools, '生成视频', { maxTools: 15, maxChars: 4000 });
+  assert.ok(r.kept.map((t) => t.name).includes('magic_tool_x'), `描述型视频工具应命中：${r.kept.map((t) => t.name)}`);
+});
+
+test('误伤回归：语音工具不应因描述里的「合成」被误判为视频', () => {
+  const tools = [
+    ...TOOLS,
+    { name: 'voice_maker', description: '语音合成与配音生成' },
+  ];
+  const r = rankToolsByRelevance(tools, '帮我生成一段视频', { maxTools: 15, maxChars: 4000 });
+  assert.ok(!r.kept.map((t) => t.name).includes('voice_maker'), 'voice_maker 不应在「生成视频」被误命中');
+});
+
+test('配音：语音工具在「配音」意图下正确命中 media 类别', () => {
+  const tools = [
+    ...TOOLS,
+    { name: 'voice_maker', description: '语音合成与配音生成' },
+    { name: 'comfyui_run', description: '本地 ComfyUI 生图与视频工作流' },
+  ];
+  const r = rankToolsByRelevance(tools, '给我这个视频配音', { maxTools: 15, maxChars: 4000 });
+  assert.ok(r.kept.map((t) => t.name).includes('voice_maker'), `配音应命中语音工具：${r.kept.map((t) => t.name)}`);
+});
+
 test('显式点名必留，且不受 maxTools 约束', () => {
   const r = rankToolsByRelevance(TOOLS, '用 mcp__github__create_issue 建 issue，用 web_search 查资料', { maxTools: 1, maxChars: 4000 });
   const names = r.kept.map((t) => t.name);
