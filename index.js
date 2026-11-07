@@ -25,6 +25,7 @@ import {
   SYSTEM_PROMPT,
   IMAGE_MODES,
   appendImageDirective,
+  detectStyleInPrompt,
 } from './lib/logic.js';
 import {
   classifyToolNeed,
@@ -328,9 +329,12 @@ export function apply(ctx, config = {}) {
       };
     }
 
-    // 生图模式：task==='image' 时按 config.imageMode 给优化器追加风格指令。
+    // 生图模式：task==='image' 时追加风格指令。
+    // 优先级硬保证：若用户原始提示词已指定画风，则无论设置页选 auto-style 还是 follow-intent，
+    // 都强制保留用户画风（用户意图 > 设置页风格选择）。
     const isImage = task === 'image';
     const imageMode = isImage ? cfg.imageMode : undefined;
+    const userStyle = isImage ? detectStyleInPrompt(text) : false;
 
     const t0 = Date.now();
     // 纯本地判断（零 API 调用、零 token）：不需要工具的草稿连清单都不读。
@@ -357,7 +361,8 @@ export function apply(ctx, config = {}) {
     const recs = discovery.available ? discovery.catalogText : '(无)';
     const baseRequest = lean ? buildLeanRequest(text) : buildOptimizeRequest(text, toolsText, recs);
     // 生图任务：把风格指令追加进 system（非生图任务原样透传，零影响）。
-    const request = isImage ? appendImageDirective(baseRequest, imageMode) : baseRequest;
+    // 传入 text 与已算好的 userStyle，确保「用户已指定画风 → 强制保留」的优先级生效。
+    const request = isImage ? appendImageDirective(baseRequest, imageMode, text, userStyle) : baseRequest;
     const promptChars = request.system.length + request.userContent.length;
     const systemSaved = SYSTEM_PROMPT.length - LEAN_SYSTEM_PROMPT.length;
 
@@ -392,6 +397,8 @@ export function apply(ctx, config = {}) {
           catalogStyle: cfg.catalogMode === 'aggregated' ? '分类聚合' : '扁平列表',
           task: isImage ? 'image' : 'general',
           imageMode: isImage ? imageMode : 'n/a',
+          imageUserStyleDetected: isImage ? userStyle : false,
+          imageEffectivePolicy: isImage ? (userStyle ? 'respect-user-style' : imageMode) : 'n/a',
           imageDirectiveApplied: isImage,
           promptChars,
           contextSavedChars: lean ? FULL_CONTEXT_OVERHEAD_CHARS + systemSaved : 0,

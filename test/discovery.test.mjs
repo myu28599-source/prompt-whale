@@ -20,6 +20,7 @@ import {
   IMAGE_MODES,
   IMAGE_STYLE_DIRECTIVES,
   appendImageDirective,
+  detectStyleInPrompt,
 } from '../lib/logic.js';
 
 const SAMPLE = {
@@ -214,4 +215,45 @@ test('生图模式两种指令都显式带「生图专项」标记且都保留�
     assert.ok(out.system.includes('【生图专项】'), `${mode} 带生图专项标记`);
   }
 });
+
+test('detectStyleInPrompt：含风格词识别为已指定，中性词不误判', () => {
+  assert.equal(detectStyleInPrompt('画一张二次元女仆'), true);
+  assert.equal(detectStyleInPrompt('写实风格的风景照'), true);
+  assert.equal(detectStyleInPrompt('Watercolor painting of a cat'), true, '英文水彩命中');
+  assert.equal(detectStyleInPrompt('3D 渲染的机甲'), true);
+  assert.equal(detectStyleInPrompt('油画风的海边日落'), true, '复合词「油画风」命中');
+  assert.equal(detectStyleInPrompt('帮我画张图'), false, '中性动词「画」不算指定风格');
+  assert.equal(detectStyleInPrompt('生成一张可爱的少女图片'), false, '纯描述无画风词');
+  assert.equal(detectStyleInPrompt(''), false);
+  assert.equal(detectStyleInPrompt(null), false);
+});
+
+test('优先级：用户已指定风格时强制 respect-user-style（覆盖设置页 auto-style）', () => {
+  const base = { system: 'S', userContent: 'U' };
+  // 设置页选 auto-style，但用户提示词里写了「写实」——必须保留用户画风，不得补。
+  const out = appendImageDirective(base, 'auto-style', '请生成一张写实风格的肖像', true);
+  assert.ok(out.system.includes('画风决策权完全归用户'), '命中 respect-user-style');
+  assert.ok(!out.system.includes('主动补全'), '不得出现 auto-style 的「主动补全」（否则会覆盖用户画风）');
+  // 设置页选 follow-intent 同理：用户已指定 → 仍走 respect（用户意图优先于设置页）。
+  const out2 = appendImageDirective(base, 'follow-intent', '二次元动漫女仆', true);
+  assert.ok(out2.system.includes('画风决策权完全归用户'), 'follow-intent 下用户已指定也走 respect');
+});
+
+test('优先级：用户未指定风格时按设置页 imageMode 走', () => {
+  const base = { system: 'S', userContent: 'U' };
+  const auto = appendImageDirective(base, 'auto-style', '帮我生成一个穿女仆装的可爱少女图片', false);
+  assert.ok(auto.system.includes('主动补全'), '未指定 + auto-style → 主动补画风');
+  const follow = appendImageDirective(base, 'follow-intent', '帮我生成一张少女图片', false);
+  assert.ok(follow.system.includes('保持画风中立'), '未指定 + follow-intent → 中立');
+  assert.ok(!follow.system.includes('主动补全'), 'follow 不补画风');
+});
+
+test('appendImageDirective：不传 override 时靠 text 自动检测优先级', () => {
+  const base = { system: 'S', userContent: 'U' };
+  const hit = appendImageDirective(base, 'auto-style', '油画风的海边日落');
+  assert.ok(hit.system.includes('画风决策权完全归用户'), 'text 命中风格 → respect（无需 override）');
+  const miss = appendImageDirective(base, 'auto-style', '生成一张海边日落');
+  assert.ok(miss.system.includes('主动补全'), 'text 未命中 → 按 auto-style 补');
+});
+
 
