@@ -8,8 +8,8 @@ const okResponse = (content) => ({
   text: async () => JSON.stringify({ choices: [{ message: { content } }] }),
 });
 
-test('三个 provider 的默认端点 / 模型 / 环境变量名符合计划与 Hy4 官方口径', () => {
-  assert.deepEqual(PROVIDER_ORDER, ['agnes', 'hunyuan', 'deepseek']);
+test('provider 默认端点 / 模型 / 环境变量名符合计划与 Hy4 官方口径', () => {
+  assert.deepEqual(PROVIDER_ORDER, ['agnes', 'hunyuan', 'deepseek', 'custom']);
   assert.equal(PROVIDER_META.hunyuan.defaultModel, 'hy4');
   assert.equal(PROVIDER_META.hunyuan.baseURL, 'https://tokenhub.tencentmaas.com/v1');
   assert.equal(PROVIDER_META.hunyuan.envKey, 'HUNYUAN_API_KEY');
@@ -113,4 +113,50 @@ test('createProvider 支持设置面板覆盖 model 与 baseURL', async () => {
     fetchImpl: async (url) => { seenUrl = url; return okResponse('结果内容'); },
   });
   assert.equal(seenUrl, 'https://proxy.test/v1/chat/completions');
+});
+
+test('custom：未配置 API 地址 / 模型名时报可读中文提示', async () => {
+  assert.equal(PROVIDER_META.custom.id, 'custom');
+  assert.equal(PROVIDER_META.custom.envKey, 'CUSTOM_API_KEY');
+  // 什么都没配 → 先要求 API 地址
+  await assert.rejects(
+    () => createProvider('custom').optimize({ text: 'hi', apiKey: 'k' }),
+    (e) => e.code === 'no-config' && /API 地址/.test(e.message),
+  );
+  // 只配了地址没配模型 → 要求模型名
+  const half = createProvider('custom', { baseURLs: { custom: 'https://relay.test/v1' } });
+  await assert.rejects(
+    () => half.optimize({ text: 'hi', apiKey: 'k' }),
+    (e) => e.code === 'no-config' && /模型名/.test(e.message),
+  );
+});
+
+test('custom：配置齐全后走标准 OpenAI 兼容调用，支持设置面板覆盖', async () => {
+  const seen = {};
+  const fetchImpl = async (url, options) => {
+    seen.url = url;
+    seen.auth = options.headers.authorization;
+    seen.body = JSON.parse(options.body);
+    return okResponse('自定义后端返回内容');
+  };
+  const provider = createProvider('custom', {
+    models: { custom: 'my-model-v2' },
+    baseURLs: { custom: 'https://my-relay.test/v1/' },
+  });
+  const result = await provider.optimize({ text: 'hi', apiKey: 'sk-me', fetchImpl });
+  assert.equal(seen.url, 'https://my-relay.test/v1/chat/completions');
+  assert.equal(seen.auth, 'Bearer sk-me');
+  assert.equal(seen.body.model, 'my-model-v2');
+  assert.equal(result.model, 'my-model-v2');
+  assert.ok(result.optimized);
+});
+
+test('custom：缺 Key 的报错与其他 provider 一致', async () => {
+  await assert.rejects(
+    () => createProvider('custom', {
+      models: { custom: 'm' },
+      baseURLs: { custom: 'https://x.test/v1' },
+    }).optimize({ text: 'hi', apiKey: '' }),
+    (e) => e.code === 'no-key' && /设置页填写/.test(e.message),
+  );
 });

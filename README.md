@@ -11,7 +11,7 @@
   <img alt="Node" src="https://img.shields.io/badge/node-18%2B-4b6fff?style=flat-square">
   <img alt="测试" src="https://img.shields.io/badge/tests-58%2F58-brightgreen?style=flat-square">
   <img alt="免费" src="https://img.shields.io/badge/Agnes-免费注册即用-f59e0b?style=flat-square">
-  <img alt="后端" src="https://img.shields.io/badge/providers-Agnes%7CHy4%7CDeepSeek-orange?style=flat-square">
+  <img alt="后端" src="https://img.shields.io/badge/providers-Agnes%7CHy4%7CDeepSeek%7C自定义-orange?style=flat-square">
   <img alt="零依赖" src="https://img.shields.io/badge/dependencies-zero-7da1de?style=flat-square">
   <img alt="无构建" src="https://img.shields.io/badge/build%20step-none-7da1de?style=flat-square">
   <br>
@@ -36,7 +36,7 @@
 
 - **默认后端 Agnes 有免费额度**：免费注册（邮箱 / Google / GitHub，无需信用卡）→ 控制台建一把 Key → 粘进设置页 → **完事，开始用**。全程不超过两分钟，不用改环境变量、不用碰任何配置文件。
 - 设置页内置**「运行润色自测」**按钮：Key 填没填对、网络通不通，点一下就知道，不用猜。
-- 想换后端？混元 Hy4 / DeepSeek 也在设置页下拉里，同样粘 Key 即切。
+- 想换后端？混元 Hy4 / DeepSeek / **自定义**都在设置页下拉里，同样粘 Key 即切。
 
 ### 为了「效果更好、速度更快」，我们专门做了这些
 
@@ -63,7 +63,7 @@
 
 ### 其他值得一提的
 
-- **多后端**：Agnes / 混元 Hy4 / DeepSeek，全部走 OpenAI 兼容接口
+- **多后端**：Agnes / 混元 Hy4 / DeepSeek，外加**自定义**档——任何 OpenAI 兼容接口都能接（OneAPI 中转、SiliconFlow、本地 Ollama / LM Studio 的 OpenAI 端点等），设置页填 API 地址 + 模型名 + Key 三项即用
 - **插件推荐**：从 4700+ 条官方市场索引里减掉你已装的，按草稿内容推荐还没装的实用插件
 - **软停用**：设置页一键停用，按钮和设置页立即消失，`Alt + Shift + W` 复活，不用重启
 - **安全**：Key 落盘权限 `0600`、接口永不回显（只显示指纹）、HTTP 路由仅回环来源可访问、诊断信息不含草稿正文
@@ -207,7 +207,7 @@ dsh plugin --profile desktop remove prompt-whale
 
 | 配置 | 取值 | 默认 | 说明 |
 | --- | --- | --- | --- |
-| Provider | `agnes` / `hunyuan` / `deepseek` | `agnes` | 优化后端，各填各的 Key |
+| Provider | `agnes` / `hunyuan` / `deepseek` / `custom` | `agnes` | 优化后端；`custom` 档在设置页填 API 地址 + 模型名 + Key（任意 OpenAI 兼容服务） |
 | 生图模式 | `自动补风格` / `跟随原意` | 自动补风格 | 勾选「🎨 生图提示词」时是否补画风锚点 |
 | 清单策略 | `auto` / `always` / `never` | `auto` | 是否附带工具 / 插件清单（auto = 按草稿内容智能判断） |
 | 清单模式 | `扁平列表` / `分类聚合` | 扁平列表 | 插件推荐清单的呈现方式 |
@@ -215,7 +215,7 @@ dsh plugin --profile desktop remove prompt-whale
 | 超时 / 温度 | number | 60s / 0.3 | Hy4 深度思考时超时自动顶到 120s |
 | 工具黑名单 | 每行一个正则 | 空 | 命中的工具会**真实从清单里剔除**，不只是 UI 摆设 |
 
-> 混元 Hy4 / DeepSeek 的 Key 与接入地址同样在设置页填写即可，各后端一行的说明设置页里有内置提示。
+> 混元 Hy4 / DeepSeek / 自定义的 Key 与接入地址同样在设置页填写即可，各后端一行的说明设置页里有内置提示。
 
 ---
 

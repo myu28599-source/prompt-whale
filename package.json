@@ -1,7 +1,7 @@
 {
   "name": "prompt-whale",
   "version": "0.1.0",
-  "description": "小鲸鱼提示词助手：把 dsh 主输入框里未发送的草稿交给可选大模型（默认 Agnes，可切混元 Hy4 / DeepSeek）润色成自包含的高质量提示词，浮层可编辑后替换或取消，并推荐生态里尚未安装的插件。",
+  "description": "小鲸鱼提示词助手：把 dsh 主输入框里未发送的草稿交给可选大模型（默认 Agnes，可切混元 Hy4 / DeepSeek / 自定义 OpenAI 兼容后端）润色成自包含的高质量提示词，浮层可编辑后替换或取消，并推荐生态里尚未安装的插件。",
   "type": "module",
   "main": "./index.js",
   "exports": {

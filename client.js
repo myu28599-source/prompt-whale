@@ -684,7 +684,7 @@
         return h('div', { style: s.root },
           h('div', { style: s.card },
             h('div', { style: s.title }, h(WhaleAvatar, { size: 24 }), '小鲸鱼提示词助手'),
-            h('p', { style: s.hint }, '把主输入框里「尚未发送」的草稿润色成自包含、可执行的高质量提示词，并推荐还没安装的 dsh 插件。用法：输入框写好草稿 → 点旁边的小鲸鱼娘「润色」→ 浮层里编辑后选「替换」或「取消」。默认 Agnes 免费档，可切混元 Hy4 / DeepSeek。'),
+            h('p', { style: s.hint }, '把主输入框里「尚未发送」的草稿润色成自包含、可执行的高质量提示词，并推荐还没安装的 dsh 插件。用法：输入框写好草稿 → 点旁边的小鲸鱼娘「润色」→ 浮层里编辑后选「替换」或「取消」。默认 Agnes 免费档，可切混元 Hy4 / DeepSeek / 自定义（填任意 OpenAI 兼容地址与模型名）。'),
 
             field('后端 Provider', h('select', {
               value: form.provider,
